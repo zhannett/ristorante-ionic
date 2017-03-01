@@ -41,8 +41,8 @@ angular.module('conFusion.controllers', [])
   };
 })
 
-  .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
-    $scope.baseURL = baseURL;
+  .controller('MenuController', ['$scope', 'menuFactory', 'baseUrl', function($scope, menuFactory, baseUrl) {
+    $scope.baseUrl = baseUrl;
     $scope.tab = 1;
     $scope.filtText = '';
     $scope.showDetails = false;
@@ -116,10 +116,10 @@ angular.module('conFusion.controllers', [])
     };
   }])
 
-  .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL',
-    function($scope, $stateParams, menuFactory, baseURL) {
+  .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseUrl',
+    function($scope, $stateParams, menuFactory, baseUrl) {
 
-    $scope.baseURL = baseURL;
+    $scope.baseUrl = baseUrl;
     $scope.dish = {};
     $scope.showDish = false;
     $scope.message="Loading ...";
@@ -156,29 +156,49 @@ angular.module('conFusion.controllers', [])
     }
   }])
 
-  // implement the IndexController and About Controller here
-  .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'baseURL', function($scope, menuFactory, corporateFactory, baseURL) {
-
-    $scope.baseURL = baseURL;
-    $scope.leader = corporateFactory.get({id: 3});
-    $scope.showDish = false;
-    $scope.message="Loading ...";
-    $scope.dish = menuFactory.getDishes().get({id:0})
-      .$promise.then(
-        function(response){
+  .controller('IndexController', ['$scope', '$stateParams', 'menuFactory', 'corporateFactory',
+    function($scope, $stateParams, menuFactory, corporateFactory) {
+      //$scope.showDish = false;
+      $scope.message = "Loading...";
+      console.log('dish',  menuFactory.getDishes().get({id: 0}));
+      menuFactory.getDishes().get({id: 0})
+        .$promise.then(
+        function(response) {
           $scope.dish = response;
-          $scope.showDish = true;
+         //menuFactory.getDishes().get({id: 0}) $scope.showDish = true;
         },
         function(response) {
-          $scope.message = "Error: "+response.status + " " + response.statusText;
+          $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
         }
       );
-    $scope.promotion = menuFactory.getPromotion().get({id:0});
-  }])
+      menuFactory.getPromotions().get({id: 0})
+        .$promise.then(
+        function(response) {
+          $scope.promotion = response;
+        },
+        function(response) {
+          $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
+        }
+      );
+      corporateFactory.getLeaders().get({id: 3})
+        .$promise.then(
+        function(response) {
+          $scope.leader = response;
+        },
+        function(response) {
+          $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
+        }
+      );
+    }
+  ])
 
   .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
-
-    $scope.leaders = corporateFactory.query();
-    console.log($scope.leaders);
-
+    corporateFactory.getLeaders().query(
+      function(response) {
+        $scope.leaders = response;
+      },
+      function(response) {
+        $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
+      }
+    );
   }]);
