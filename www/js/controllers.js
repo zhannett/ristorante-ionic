@@ -39,6 +39,34 @@ angular.module('conFusion.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+
+  // Create the reserve modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/reserve.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.reserveForm = modal;
+  });
+
+  // Triggered in the login modal to close it
+  $scope.closeReserve = function() {
+    $scope.reserveForm.hide();
+  };
+
+  // Open the reserve modal
+  $scope.reserve = function() {
+    $scope.reserveForm.show();
+  };
+
+  // Perform the reserve action when the user submits the reserve form
+  $scope.doReserve = function() {
+    console.log('Doing reserve', $scope.reserveData);
+
+    // Simulate a reserve delay. Remove this and replace with your reserve
+    // code if using a reserve system
+    $timeout(function() {
+      $scope.closeReserve();
+    }, 1000);
+  };
 })
 
   .controller('MenuController', ['$scope', 'menuFactory', 'baseUrl', function($scope, menuFactory, baseUrl) {
@@ -192,7 +220,8 @@ angular.module('conFusion.controllers', [])
     }
   ])
 
-  .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
+  .controller('AboutController', ['$scope', 'corporateFactory', 'baseUrl', function($scope, corporateFactory, baseUrl) {
+    $scope.baseUrl = baseUrl;
     corporateFactory.getLeaders().query(
       function(response) {
         $scope.leaders = response;
