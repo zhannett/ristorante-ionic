@@ -44,3 +44,20 @@ angular.module('conFusion.services', ['ngResource'])
         };
         return favFac;
     }])
+  .factory('feedbackFactory', ['$resource', 'baseUrl',
+      function ($resource, baseUrl) {
+          return $resource(baseUrl + 'feedback/:id', null, {
+              'save': {
+                method: "POST"
+              }
+          });
+      }
+    /*
+     
+     var feedfac = {};
+     feedfac.getFeedback = function () {
+     return $resource(baseURL + "feedback/:id", null, {'update': {method: 'PUT'}});
+     };
+     return feedfac;
+     */
+  ]);

@@ -1,86 +1,40 @@
 <ion-view view-title="Dish Details">
-  <ion-content>
-    <div class="card">
-      <div class="item item-body item-text-wrap">
-        <img class="full-image" ng-src="{{baseUrl + dish.image}}" alt="Uthappizza">
-        <h2>{{dish.name}}
-          <span style="font-size: 75%">{{dish.price | currency}}</span>
-          <span class="badge badge-assertive">{{dish.label}}</span>
-        </h2>
-        <p>{{dish.description}}</p>
+    <ion-nav-buttons side="secondary">
+      <div class="buttons">
+        <button class="button button-icon icon ion-more" ng-click="openPopover($event)"></button>
       </div>
-    </div>
-
-
-
-
-    <div class="row">
-      <div class="col col-offset-10">
-        <h4>
-          Customer Comments &nbsp;&nbsp;
-          <small>Sort by: &nbsp;
-            <input type="text" ng-model="orderText">
-          </small>
-        </h4>
-        <ul class="list">
-          <li ng-repeat="comment in dish.comments |  orderBy : orderText">
-            <blockquote>
-              <p>{{comment.rating}} Stars</p>
-              <p>{{comment.comment}}</p>
-              <footer>{{comment.author}}, {{comment.date | date : 'MMM. dd, yyyy'}}</footer>
-            </blockquote>
-          </li>
-        </ul>
-    </div>
-   </div>
-
-  </ion-content>
-</ion-view>
-<!--
-
-    <div  ng-controller="DishCommentController">
-      <div class="col-xs-9 col-xs-offset-1" ng-show="commentForm.$valid && !commentForm.$pristine">
-        <blockquote class="blockquote">
-          <p class="preview-stars">{{stars.value}}</p>
-          <p class="preview-comment">Comments: {{comment.comments}}</p>
-          <footer class="blockquote-footer preview-footer">{{comment.name}}, {{comment.date | date : 'MMM. dd, yyyy'}}</footer>
-        </blockquote>
+    </ion-nav-buttons>
+    <ion-content>
+      <div class="card">
+        <div class="item item-body item-text-wrap">
+          <img class="full-image" ng-src="{{baseUrl + dish.image}}" alt="Uthappizza">
+          <h2>{{dish.name}}
+            <span style="font-size: 75%">{{dish.price | currency}}</span>
+            <span class="badge badge-assertive">{{dish.label}}</span>
+          </h2>
+          <p>{{dish.description}}</p>
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-9 col-sm-push-1">
-        <form class="form-horizontal" role="form" name="commentForm" ng-submit="submitComment()" novalidate>
-          <div class="form-group" ng-class="{'has-error': commentForm.name.$error.required && !commentForm.name.$pristine}">
-            <label for="name" class="col-sm-3 control-label">Your Name</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" ng-model="comment.name" required>
-              <span ng-show="commentForm.name.$error.required && !commentForm.name.$pristine" class="help-block">Your Name is required.</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Number of Stars</label>
-            <div class="radio col-sm-9">
-              <label class="radio-inline"><input type="radio" name="stars" ng-model="stars.value"  value="1 Star" />1</label>
-              <label class="radio-inline"><input type="radio" name="stars" ng-model="stars.value"  value="2 Stars" />2</label>
-              <label class="radio-inline"><input type="radio" name="stars" ng-model="stars.value"  value="3 Stars" />3</label>
-              <label class="radio-inline"><input type="radio" name="stars" ng-model="stars.value"  value="4 Stars" />4</label>
-              <label class="radio-inline"><input type="radio" name="stars" ng-model="stars.value"  value="5 Stars" />5</label>
-            </div>
-          </div>
-          <div class="form-group" ng-class="{'has-error': commentForm.comment.$error.required && !commentForm.comment.$pristine}">
-            <label for="comment" class="col-sm-3 control-label">Your Comment</label>
-            <div class="col-sm-9">
-              <textarea class="form-control" id="comment" name="comment" rows="12" ng-model="comment.comments" required></textarea>
-              <span ng-show="commentForm.comment.$error.required && !commentForm.comment.$pristine" class="help-block">Your Comment is required.</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary" ng-disabled="commentForm.$invalid" ng-click="submitComment()">Submit Comment</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    </div>
-    </div>
 
--->
+      <div class="row">
+        <div class="col col-offset-10">
+          <h4>
+            Customer Comments &nbsp;&nbsp;
+            <small>Sort by: &nbsp;
+              <input type="text" ng-model="orderText">
+            </small>
+          </h4>
+          <ul class="list">
+            <li ng-repeat="comment in dish.comments |  orderBy : orderText">
+              <blockquote>
+                <p>{{comment.rating}} Stars</p>
+                <p>{{comment.comment}}</p>
+                <footer>{{comment.author}}, {{comment.date | date : 'MMM. dd, yyyy'}}</footer>
+              </blockquote>
+            </li>
+          </ul>
+      </div>
+     </div>
+
+    </ion-content>
+  </ion-view>

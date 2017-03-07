@@ -1,0 +1,36 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">Submit Comment on Dish</h1>
+        <button class = "button button-right" ng-click = "closeModal()">Close</button>
+    </ion-header-bar>
+    <ion-content>
+        <div ng-controller="DishCommentController">
+            <form name="commentForm" ng-submit="submitComment()" novalidate ng-submit>
+                <div class="list">
+                    <label class="item item-input item-select">
+                        <div class="input-label">Rating</div>
+                        <select name="rating" ng-model="mycomment.rating">
+                            <option selected></option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">Your Name</span>
+                        <input type="text" name="author" ng-model="mycomment.author" />
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">Your Comment</span>
+                        <textarea name="comment" ng-model="mycomment.comment"></textarea>
+                    </label>
+                    <label class="item item-input">
+                        <button type="submit" class="button button-block button-positive">Submit</button>
+                    </label>"
+                </div>
+            </form>
+        </div>
+    </ion-content>
+</ion-modal-view>
