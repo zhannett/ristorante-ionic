@@ -77,8 +77,6 @@ angular.module('conFusion.controllers', [])
           $scope.tab = 1;
           $scope.filtText = '';
           $scope.showDetails = false;
-          $scope.showMenu = false;
-          $scope.message = "Loading ...";
           $scope.dishes = dishes;
           $scope.select = function (setTab) {
             $scope.tab = setTab;
@@ -175,8 +173,6 @@ angular.module('conFusion.controllers', [])
   .controller('IndexController', ['$scope', 'dish', 'promotion', 'leader', 'baseURL',
       function($scope, dish, promotion, leader, baseURL) {
           $scope.baseURL = baseURL;
-          $scope.showDish = false;
-          $scope.message = "Loading...";
           $scope.dish = dish;
           $scope.promotion = promotion;
           $scope.leader = leader;
@@ -188,11 +184,11 @@ angular.module('conFusion.controllers', [])
       $scope.leaders = leaders;
   }])
 
-  .controller('FavoritesController', ['$scope', 'dishes', '$localStorage', 'favoriteFactory', 'baseURL', '$ionicPopup', '$ionicLoading', '$timeout',
-      function($scope, dishes, $localStorage, favoriteFactory, baseURL, $ionicPopup, $ionicLoading,  $timeout) {
+  .controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicPopup', '$ionicLoading', '$timeout',
+      function($scope, dishes, favorites, favoriteFactory, baseURL, $ionicPopup, $ionicLoading,  $timeout) {
           $scope.baseURL = baseURL;
           $scope.shouldShowDelete = false;
-          $scope.favorites = $localStorage.getObject('favorites', []);
+          $scope.favorites = favorites;
           $scope.dishes = dishes;
           
           console.log($scope.dishes, $scope.favorites);
@@ -209,26 +205,27 @@ angular.module('conFusion.controllers', [])
                   if (res) {
                       console.log('OK to delete');
                       favoriteFactory.deleteFromFavorites(index);
-                      $scope.favorites = $localStorage.getObject('favorites', []);
+                  } else {
+                    console.log('Canceled delete');
                   }
                   $scope.shouldShowDelete = false;
               })
           }
       }
-    ])
+  ])
 
-      .filter('favoriteFilter', function() {
-          return function(dishes, favorites) {
-            var out = [];
-            for (var i = 0; i < favorites.length; i++) {
-              for (var j = 0; j < dishes.length; j++) {
-                  if (dishes[j].id === favorites[i].id) {
-                    out.push(dishes[j]);
-                  }
+  .filter('favoriteFilter', function() {
+      return function(dishes, favorites) {
+        var out = [];
+        for (var i = 0; i < favorites.length; i++) {
+          for (var j = 0; j < dishes.length; j++) {
+              if (dishes[j].id === favorites[i].id) {
+                out.push(dishes[j]);
               }
-            }
-            return out;
           }
-      });
+        }
+        return out;
+      }
+  });
 
 

@@ -53,13 +53,13 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/home.html',
                         controller: 'IndexController',
                         resolve: {
-                            dish: ['$stateParams', 'menuFactory', function($stateParams, menuFactory) {
+                            dish: ['menuFactory', function(menuFactory) {
                                 return menuFactory.get({id: 0});
                             }],
-                            promotion: ['$stateParams', 'promotionFactory', function($stateParams, promotionFactory) {
+                            promotion: ['promotionFactory', function(promotionFactory) {
                                 return promotionFactory.get({id: 0});
                             }],
-                            leader: ['$stateParams', 'corporateFactory', function($stateParams, corporateFactory) {
+                            leader: ['corporateFactory', function(corporateFactory) {
                                 return corporateFactory.get({id: 3});
                             }]
                         }
@@ -125,6 +125,9 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         resolve: {
                             dishes: ['menuFactory', function(menuFactory) {
                                 return menuFactory.query();
+                            }],
+                            favorites: ['favoriteFactory', function (favoriteFactory) {
+                              return favoriteFactory.getFavorites();
                             }]
                         }
                     }
