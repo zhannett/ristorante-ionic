@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.services'])
+angular.module('conFusion', ['ionic', 'ionic.cloud', 'ngCordova', 'conFusion.controllers', 'conFusion.services'])
   
-    .run(function($ionicPlatform, $rootScope, $ionicLoading) {
+    .run(function($ionicPlatform, $rootScope, $ionicLoading, $cordovaSplashscreen, $timeout) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -19,6 +19,9 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
+            $timeout(function() {
+                //$cordovaSplashscreen.hide();
+            }, 2000);
         });
         $rootScope.$on('loading: show', function() {
             $ionicLoading.show({
@@ -38,7 +41,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
         });
     })
   
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $ionicCloudProvider) {
         $stateProvider
             .state('app', {
                 url: '/app',
@@ -53,19 +56,19 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/home.html',
                         controller: 'IndexController',
                         resolve: {
-                            dish: ['menuFactory', function(menuFactory) {
-                                return menuFactory.get({id: 0});
+                            dish: ['menuFactory', function (menuFactory) {
+                              return menuFactory.get({id: 0});
                             }],
-                            promotion: ['promotionFactory', function(promotionFactory) {
-                                return promotionFactory.get({id: 0});
+                            promotion: ['promotionFactory', function (promotionFactory) {
+                              return promotionFactory.get({id: 0});
                             }],
-                            leader: ['corporateFactory', function(corporateFactory) {
-                                return corporateFactory.get({id: 3});
+                            leader: ['corporateFactory', function (corporateFactory) {
+                              return corporateFactory.get({id: 3});
                             }]
                         }
                     }
                 }
-             })
+            })
             .state('app.aboutus', {
                 url: '/aboutus',
                 views: {
@@ -73,7 +76,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/aboutus.html',
                         controller: 'AboutController',
                         resolve: {
-                            leaders: ['corporateFactory', function(corporateFactory) {
+                            leaders: ['corporateFactory', function (corporateFactory) {
                                 return corporateFactory.query();
                             }]
                         }
@@ -85,7 +88,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                 views: {
                     'mainContent': {
                         templateUrl: 'templates/contactus.html'
-                   }
+                    }
                 }
             })
             .state('app.menu', {
@@ -95,12 +98,12 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/menu.html',
                         controller: 'MenuController',
                         resolve: {
-                            dishes: ['menuFactory', function(menuFactory) {
-                              return menuFactory.query();
+                            dishes: ['menuFactory', function (menuFactory) {
+                                return menuFactory.query();
                             }]
                         }
+                    }
                 }
-              }
             })
             .state('app.dishdetails', {
                 url: '/menu/:id',
@@ -109,7 +112,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/dishdetail.html',
                         controller: 'DishDetailController',
                         resolve: {
-                            dish: ['$stateParams', 'menuFactory', function($stateParams, menuFactory) {
+                            dish: ['$stateParams', 'menuFactory', function ($stateParams, menuFactory) {
                                 return menuFactory.get({id: parseInt($stateParams.id, 10)});
                             }]
                         }
@@ -123,16 +126,22 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                         templateUrl: 'templates/favorites.html',
                         controller: 'FavoritesController',
                         resolve: {
-                            dishes: ['menuFactory', function(menuFactory) {
+                            dishes: ['menuFactory', function (menuFactory) {
                                 return menuFactory.query();
                             }],
                             favorites: ['favoriteFactory', function (favoriteFactory) {
-                              return favoriteFactory.getFavorites();
+                                return favoriteFactory.getFavorites();
                             }]
                         }
                     }
                 }
             });
-    // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/app/home');
+        // if none of the above states are matched, use this as the fallback
+        $urlRouterProvider.otherwise('/app/home');
+    
+        $ionicCloudProvider.init({
+            "core": {
+                "app_id": "d5cafe6b"
+            }
+        });
 });
