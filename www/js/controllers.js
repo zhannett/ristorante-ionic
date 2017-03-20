@@ -1,6 +1,6 @@
 angular.module('conFusion.controllers', [])
 
-  .controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile) {
+  .controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $cordovaImagePicker) {
   
       // With the new view caching in Ionic, Controllers are only called
       // when they are recreated or on app start, instead of every page change.
@@ -8,12 +8,12 @@ angular.module('conFusion.controllers', [])
       // listen for the $ionicView.enter event:
       //$scope.$on('$ionicView.enter', function(e) {
       //});
-  
+    
       // Form data for the login modal
       $scope.loginData = $localStorage.getObject('userinfo', '{}');
       $scope.reservation = {};
       $scope.registration = {};
-  
+    
       // Create the registration modal that we will use later
       $ionicModal.fromTemplateUrl('templates/register.html', {
           scope: $scope
@@ -25,12 +25,64 @@ angular.module('conFusion.controllers', [])
       $scope.closeRegister = function () {
           $scope.registerform.hide();
       };
-  
+    
       // Open the registration modal
       $scope.register = function () {
           $scope.registerform.show();
       };
-    
+  
+      $ionicPlatform.ready(function () {
+          var options = {
+              quality: 50,
+              destinationType: Camera.DestinationType.DATA_URL,
+              sourceType: Camera.PictureSourceType.CAMERA,
+              allowEdit: true,
+              encodingType: Camera.EncodingType.JPEG,
+              targetWidth: 100,
+              targetHeight: 100,
+              popoverOptions: CameraPopoverOptions,
+              saveToPhotoAlbum: false
+          };
+          $scope.takePicture = function () {
+              $cordovaCamera.getPicture(options)
+              .then(
+                  function (imageData) {
+                      $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+                  },
+                  function (err) {
+                      console.log(err);
+                  }
+              );
+              $scope.registerform.show();
+          };
+  
+          $scope.choosePicture = function () {
+              var options = {
+                  maximumImagesCount: 1,
+                  width: 100,
+                  height: 100,
+                  quality: 50
+              };
+              $cordovaImagePicker.getPictures(options)
+              .then(
+                  function (results) {
+                      var img = [];
+                      for (var i = 0; i < results.length; i++) {
+                          window.plugins.Base64.encodeFile(results[i], function (imageData) {
+                              $scope.registration.imgSrc = imageData;
+                              img.push(imageData);
+                          });
+                          $scope.registration.imgSrc.push(imageData);
+                          $scope.registerform.show();
+                      }
+                  },
+                  function (err) {
+                      console.log('err: ' + err);
+                  }
+              );
+          };
+      });
+  
       // Perform the registration action when the user submits the registration form
       $scope.doRegister = function () {
           //console.log('Doing reservation', $scope.reservation);
@@ -39,129 +91,64 @@ angular.module('conFusion.controllers', [])
           $timeout(function () {
               $scope.closeRegister();
           }, 1000);
-          
-          $scope.getPictures = function () {
-              var options = {
-                maximumImagesCount: 1,
-                width: 100,
-                height: 100,
-                quality: 50
-              };
-              $cordovaImagePicker.getPictures(options)
-              .then(
-                  function (res) {
-                      /*
-                       for (var i = 0; i < res.length; i++) {
-                       // To encode URI to Base64, add base64 plugin:  ionic plugin add com-badrit-base64
-                       window.plugins.Base64.encodeFile(res[i], function (imageData) {
-                       $scope.registration.imgSrc = imageData; // works! specify width, height, quality in options
-                       $scope.registerform.show();
-                       });
-                       }
-                       */
-                      var imgURI = res[0];
-                      var imgDir = imgURI.substring(0, imgURI.lastIndexOf('/'));
-                      var imgName = imgURI.substring((imgURI.lastIndexOf('/') + 1), imgURI.length);
-                      $cordovaFile.readAsDataURL(imgDir, imgName)
-                      .then(
-                          function (res) {
-                              $scope.registration.imgSrc = res;
-                          },
-                          function (err) {
-                              console.log('Error: ' + err);
-                          }
-                      );
-                  },
-                  function (err) {
-                    // error getting photos
-                    console.log('Error: ' + err);
-                  }
-              );
-          };
-  
-          $ionicPlatform.ready(function() {
-              var options = {
-                  quality: 50,
-                  destinationType: Camera.DestinationType.DATA_URL,
-                  sourceType: Camera.PictureSourceType.CAMERA,
-                  allowEdit: true,
-                  encodingType: Camera.EncodingType.JPEG,
-                  targetWidth: 100,
-                  targetHeight: 100,
-                  popoverOptions: CameraPopoverOptions,
-                  saveToPhotoAlbum: false
-              };
-              $scope.takePicture = function () {
-                  $cordovaCamera.getPicture(options)
-                  .then(
-                      function (imageData) {
-                          $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
-                      },
-                      function (err) {
-                          console.log(err);
-                      }
-                  );
-                  $scope.registerform.show();
-              };
-          })
       };
-    
+  
       // Create the login modal that we will use later
       $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
-      }).then(function(modal) {
+      }).then(function (modal) {
         $scope.modal = modal;
       });
-  
+    
       // Triggered in the login modal to close it
-      $scope.closeLogin = function() {
+      $scope.closeLogin = function () {
         $scope.modal.hide();
       };
     
       // Open the login modal
-      $scope.login = function() {
+      $scope.login = function () {
         $scope.modal.show();
       };
-  
-      // Perform the login action when the user submits the login form
-      $scope.doLogin = function() {
-          console.log('Doing login', $scope.loginData);
-          $localStorage.storeObject('userinfo', $scope.loginData);
     
-          // Simulate a login delay. Remove this and replace with your login
-          // code if using a login system
-          $timeout(function() {
-              $scope.closeLogin();
-          }, 1000);
+      // Perform the login action when the user submits the login form
+      $scope.doLogin = function () {
+        console.log('Doing login', $scope.loginData);
+        $localStorage.storeObject('userinfo', $scope.loginData);
+      
+        // Simulate a login delay. Remove this and replace with your login
+        // code if using a login system
+        $timeout(function () {
+          $scope.closeLogin();
+        }, 1000);
       };
-
+  
       // Create the reserve modal that we will use later
       $ionicModal.fromTemplateUrl('templates/reserve.html', {
         scope: $scope
-      }).then(function(modal) {
-          $scope.reserveForm = modal;
+      }).then(function (modal) {
+        $scope.reserveForm = modal;
       });
     
       // Triggered in the login modal to close it
-      $scope.closeReserve = function() {
-          $scope.reserveForm.hide();
+      $scope.closeReserve = function () {
+        $scope.reserveForm.hide();
       };
     
       // Open the reserve modal
-      $scope.reserve = function() {
-          $scope.reserveForm.show();
+      $scope.reserve = function () {
+        $scope.reserveForm.show();
       };
     
       // Perform the reserve action when the user submits the reserve form
       /*$scope.doReserve = function() {
-          console.log('Doing reserve', $scope.reserveData);
-      
-          // Simulate a reserve delay. Remove this and replace with your reserve
-          // code if using a reserve system
-          $timeout(function() {
-              $scope.closeReserve();
-          }, 1000);
-      };*/
+       console.log('Doing reserve', $scope.reserveData);
+     
+       // Simulate a reserve delay. Remove this and replace with your reserve
+       // code if using a reserve system
+       $timeout(function() {
+       $scope.closeReserve();
+       }, 1000);
+       };*/
   })
 
   .controller('MenuController', ['$scope', 'dishes', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
