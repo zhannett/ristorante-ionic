@@ -347,7 +347,9 @@ angular.module('conFusion.controllers', [])
                   if (res) {
                       console.log('OK to delete');
                       favoriteFactory.deleteFromFavorites(index);
-                      $cordovaVibration.vibrate(100);
+                      $ionicPlatform.ready(function() {
+                          $cordovaVibration.vibrate(100);
+                      });
                   } else {
                     console.log('Canceled delete');
                   }
